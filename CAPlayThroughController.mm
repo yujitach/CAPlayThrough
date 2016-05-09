@@ -49,6 +49,7 @@
 
 @implementation CAPlayThroughController
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel);
+AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList);
 
 - (id)init
 {
@@ -59,36 +60,10 @@ static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, Audio
 
 - (void)awakeFromNib
 {
-    UInt32 propsize = sizeof(AudioDeviceID);
-    AudioObjectPropertyAddress theAddress = { kAudioHardwarePropertyDefaultInputDevice,
-                                              kAudioObjectPropertyScopeGlobal,
-                                              kAudioObjectPropertyElementMaster };
-
-    verify_noerr (AudioObjectGetPropertyData(kAudioObjectSystemObject,
-                                                   &theAddress,
-                                                   0,
-                                                   NULL,
-                                                   &propsize,
-                                                   &inputDevice));
-
-	propsize = sizeof(AudioDeviceID);
-    theAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
-    verify_noerr (AudioObjectGetPropertyData(kAudioObjectSystemObject,
-                                                   &theAddress,
-                                                   0,
-                                                   NULL,
-                                                   &propsize,
-                                                   &outputDevice));
-                                                        
-	BuildDeviceMenu(mInputDeviceList, mInputDevices, inputDevice);
-	BuildDeviceMenu(mOutputDeviceList, mOutputDevices, outputDevice);
-	
+    inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"Soundflower (2ch)", mInputDeviceList);
+    outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"HDMI", mOutputDeviceList);
 	playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
-	if(!playThroughHost)
-	{
-		NSLog(@"ERROR: playThroughHost init failed!");
-		exit(1);
-	}
+    [self startStop:nil];
 }
 
 - (void) dealloc 
@@ -172,7 +147,17 @@ static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, Audio
 		[self resetPlayThrough];
 	}
 }
-
+AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList){
+    int index=0;
+    AudioDeviceList::DeviceList &thelist = devList->GetList();
+    for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
+        NSString*name=[NSString stringWithUTF8String:(*i).mName];
+        if([name hasPrefix:prefix]){
+            return (*i).mID;
+        }
+    }
+    abort();
+}
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel)
 {
 	[menu removeAllItems];
@@ -180,10 +165,10 @@ static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, Audio
 	AudioDeviceList::DeviceList &thelist = devlist->GetList();
 	int index = 0;
 	for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
-		while([menu itemWithTitle:[NSString stringWithCString: (*i).mName encoding:NSASCIIStringEncoding]] != nil) {
+/*		while([menu itemWithTitle:[NSString stringWithCString: (*i).mName encoding:NSASCIIStringEncoding]] != nil) {
 			strcat((*i).mName, " ");
 		}
-
+*/
 		if([menu itemWithTitle:[NSString stringWithCString: (*i).mName encoding:NSASCIIStringEncoding]] == nil) {
 			[menu insertItemWithTitle: [NSString stringWithCString: (*i).mName encoding:NSASCIIStringEncoding] atIndex:index];
 

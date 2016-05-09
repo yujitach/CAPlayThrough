@@ -274,7 +274,7 @@ public:
 	// _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 	//
 	//	manipulation
-	
+/*
 	void	SetCanonical(UInt32 nChannels, bool interleaved)
 				// note: leaves sample rate untouched
 	{
@@ -327,7 +327,7 @@ public:
 			mFormatFlags |= kAudioFormatFlagIsNonInterleaved;
 		}
 	}
-	
+*/	
 	void	ChangeNumberChannels(UInt32 nChannels, bool interleaved)
 				// alter an existing format
 	{
@@ -384,8 +384,8 @@ public:
 
 //	Operations
 	static bool			IsMixable(const AudioStreamBasicDescription& inDescription) { return (inDescription.mFormatID == kAudioFormatLinearPCM) && ((inDescription.mFormatFlags & kIsNonMixableFlag) == 0); }
-	static void			NormalizeLinearPCMFormat(AudioStreamBasicDescription& ioDescription);
-	static void			NormalizeLinearPCMFormat(bool inNativeEndian, AudioStreamBasicDescription& ioDescription);
+//	static void			NormalizeLinearPCMFormat(AudioStreamBasicDescription& ioDescription);
+//	static void			NormalizeLinearPCMFormat(bool inNativeEndian, AudioStreamBasicDescription& ioDescription);
 	static void			ResetFormat(AudioStreamBasicDescription& ioDescription);
 	static void			FillOutFormat(AudioStreamBasicDescription& ioDescription, const AudioStreamBasicDescription& inTemplateDescription);
 	static void			GetSimpleName(const AudioStreamBasicDescription& inDescription, char* outName, UInt32 inMaxNameLength, bool inAbbreviate, bool inIncludeSampleRate = false);

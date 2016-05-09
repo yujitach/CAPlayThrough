@@ -191,7 +191,7 @@ char *CAStreamBasicDescription::AsString(char *buf, size_t _bufsize) const
 exit:
 	return theBuffer;
 }
-
+/*
 void	CAStreamBasicDescription::NormalizeLinearPCMFormat(AudioStreamBasicDescription& ioDescription)
 {
 	//  the only thing that changes is to make mixable linear PCM into the canonical linear PCM format
@@ -231,7 +231,7 @@ void	CAStreamBasicDescription::NormalizeLinearPCMFormat(bool inNativeEndian, Aud
 		ioDescription.mBitsPerChannel = 8 * SizeOf32(AudioSampleType);
 	}
 }
-
+*/
 void	CAStreamBasicDescription::ResetFormat(AudioStreamBasicDescription& ioDescription)
 {
 	ioDescription.mSampleRate = 0;
