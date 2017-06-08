@@ -124,7 +124,7 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
 
 - (IBAction)inputDeviceSelected:(id)sender
 {
-	int val = [mInputDevices indexOfSelectedItem];
+	int val = (int)[mInputDevices indexOfSelectedItem];
 	AudioDeviceID newDevice =(mInputDeviceList->GetList())[val].mID;
 	
 	if(newDevice != inputDevice)
@@ -137,7 +137,7 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
 
 - (IBAction)outputDeviceSelected:(id)sender
 {
-	int val = [mOutputDevices indexOfSelectedItem];
+	int val = (int)[mOutputDevices indexOfSelectedItem];
 	AudioDeviceID newDevice = (mOutputDeviceList->GetList())[val].mID;
 	
 	if(newDevice != outputDevice)
@@ -158,6 +158,7 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
     }
     abort();
 }
+
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel)
 {
 	[menu removeAllItems];
