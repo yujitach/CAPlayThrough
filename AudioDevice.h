@@ -73,5 +73,6 @@ public:
 	AudioStreamBasicDescription		mFormat;	
 };
 
+#define verify_noerr(x) (x)
 
 #endif // __AudioDevice_h__
