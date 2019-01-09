@@ -1,14 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <customObject id="267" customClass="NSApplication"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="267" customClass="NSApplication">
+            <connections>
+                <outlet property="dockMenu" destination="bkB-2s-Hf4" id="Qae-eo-0gt"/>
+            </connections>
+        </customObject>
         <menu title="MainMenu" systemMenu="main" id="289">
             <items>
                 <menuItem title="CAPlayThrough" id="296">
@@ -56,5 +60,17 @@
             </items>
         </menu>
         <customObject id="351" customClass="CAPlayThroughController"/>
+        <menu id="bkB-2s-Hf4">
+            <items>
+                <menuItem id="Jj8-pS-jPz">
+                    <string key="title">If it stopped working, open "Security &amp; Privacy" pane of the System Preference, then uncheck and recheck this app in the "Mic" entry.</string>
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="openSystemPref:" target="351" id="vfk-bZ-dxP"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="17" y="413"/>
+        </menu>
     </objects>
 </document>

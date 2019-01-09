@@ -106,6 +106,10 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
 	
 	playThroughHost->CreatePlayThrough(inputDevice, outputDevice);
 }
+- (IBAction)openSystemPref:(id)sender {
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy"]];
+    // see https://macosxautomation.com/system-prefs-links.html
+}
 
 - (IBAction)startStop:(id)sender
 {
