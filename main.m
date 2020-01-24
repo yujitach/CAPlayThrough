@@ -49,5 +49,6 @@
 
 int main(int argc,const char *argv[])
 {
+    system("open /System/Library/PreferencePanes/Displays.prefPane/");
     return NSApplicationMain(argc, argv);
 }
