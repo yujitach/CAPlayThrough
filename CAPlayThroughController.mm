@@ -60,8 +60,10 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
 
 - (void)awakeFromNib
 {
-    inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"Soundflower (2ch)", mInputDeviceList);
-    outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"HDMI", mOutputDeviceList);
+    // BlackHole can be found at https://github.com/ExistentialAudio/BlackHole
+    // I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/ 
+    inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BlackHole 2ch", mInputDeviceList);
+    outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
 	playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
     [self startStop:nil];
 }
