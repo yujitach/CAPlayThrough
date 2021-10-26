@@ -50,6 +50,7 @@
 @implementation CAPlayThroughController
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel);
 AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList);
+AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefix,AudioDeviceList*devList,AudioDeviceID exclude);
 
 - (id)init
 {
@@ -63,7 +64,10 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
     // BlackHole can be found at https://github.com/ExistentialAudio/BlackHole
     // I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/ 
     inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BlackHole 2ch", mInputDeviceList);
-    outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
+    outputDevice=AudioDeviceWithNameWithPrefixInDeviceListPreferring(@"BenQ", mOutputDeviceList,61);
+    if(!outputDevice){
+        outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
+    }
 	playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
     [self startStop:nil];
 }
@@ -112,7 +116,16 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy"]];
     // see https://macosxautomation.com/system-prefs-links.html
 }
+- (IBAction)switchOutput:(id)sender
+{
+    [self stop:sender];
+    NSLog(@"output was: %@",@(outputDevice));
+    outputDevice=AudioDeviceWithNameWithPrefixInDeviceListButNotThis(@"BenQ", mOutputDeviceList,outputDevice);
+    NSLog(@"output is: %@",@(outputDevice));
+    [self resetPlayThrough];
+    [self start:sender];
 
+}
 - (IBAction)startStop:(id)sender
 {
 
@@ -164,7 +177,33 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
     }
     abort();
 }
-
+AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefix,AudioDeviceList*devList,AudioDeviceID exclude){
+    int index=0;
+    AudioDeviceList::DeviceList &thelist = devList->GetList();
+    for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
+        if((*i).mID==exclude){
+            continue;
+        }
+        NSString*name=[NSString stringWithUTF8String:(*i).mName];
+        if([name hasPrefix:prefix]){
+            return (*i).mID;
+        }
+    }
+    abort();
+}
+AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListPreferring(NSString*prefix,AudioDeviceList*devList,AudioDeviceID prefers){
+    int index=0;
+    AudioDeviceList::DeviceList &thelist = devList->GetList();
+    for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
+        NSString*name=[NSString stringWithUTF8String:(*i).mName];
+        if([name hasPrefix:prefix]){
+            if((*i).mID==prefers){
+                return prefers;
+            }
+        }
+    }
+    return 0;
+}
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel)
 {
 	[menu removeAllItems];
