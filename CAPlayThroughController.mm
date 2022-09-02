@@ -64,12 +64,16 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefi
     // BlackHole can be found at https://github.com/ExistentialAudio/BlackHole
     // I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/ 
     inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BlackHole 2ch", mInputDeviceList);
-    outputDevice=AudioDeviceWithNameWithPrefixInDeviceListPreferring(@"BenQ", mOutputDeviceList,61);
-    if(!outputDevice){
-        outputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
+    NSArray<NSNumber*>*a=AudioDevicesWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
+    if([a count]>=1){
+        outputDevice = [a[0] unsignedIntValue];
+        playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
     }
-	playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
-    [self startStop:nil];
+    if([a count]>=2){
+        outputDevice = [a[1] unsignedIntValue];
+        playThroughHost2 = new CAPlayThroughHost(inputDevice,outputDevice);
+    }
+    [self start:nil];
 }
 
 - (void) dealloc 
@@ -89,6 +93,7 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefi
 	{
 		[mStartButton setTitle:@" Press to Stop"];
 		playThroughHost->Start();
+        if(playThroughHost2)playThroughHost2->Start();
 		[mProgress setHidden: NO];
 		[mProgress startAnimation:sender];
 	}
@@ -176,6 +181,18 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
         }
     }
     abort();
+}
+NSArray* AudioDevicesWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList){
+    int index=0;
+    AudioDeviceList::DeviceList &thelist = devList->GetList();
+    NSMutableArray*array=[NSMutableArray array];
+    for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
+        NSString*name=[NSString stringWithUTF8String:(*i).mName];
+        if([name hasPrefix:prefix]){
+            [array addObject:@((*i).mID)];
+        }
+    }
+    return array;
 }
 AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefix,AudioDeviceList*devList,AudioDeviceID exclude){
     int index=0;

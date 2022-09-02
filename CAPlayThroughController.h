@@ -55,9 +55,8 @@
 	IBOutlet NSPopUpButton *		mOutputDevices;
     IBOutlet NSButton *				mStartButton;
 	IBOutlet NSProgressIndicator *	mProgress;
-
-	CAPlayThroughHost *				playThroughHost;
-        	
+    CAPlayThroughHost *				playThroughHost;
+    CAPlayThroughHost *             playThroughHost2;
 	AudioDeviceList *				mInputDeviceList;
 	AudioDeviceList	*				mOutputDeviceList;
 	AudioDeviceID					inputDevice;
