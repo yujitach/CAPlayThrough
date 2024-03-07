@@ -47,6 +47,18 @@
 
 #import "CAPlayThroughController.h"
 
+/// Configuration Section
+
+// BlackHole can be found at https://github.com/ExistentialAudio/BlackHole
+// I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/
+/// Replace with prefix of desired input device on your system
+/// Run once and look at log for list of input device names if unsure
+static NSString *const kInputDevicePrefix = @"BlackHole 2ch";
+
+/// Replace with prefix of designed output device on your system
+/// The names of your devices can be found in the Preferences -> Sound
+static NSString *const kOutputDevicePrefix = @"BenQ";
+
 @implementation CAPlayThroughController
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel);
 AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList);
@@ -61,10 +73,8 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefi
 
 - (void)awakeFromNib
 {
-    // BlackHole can be found at https://github.com/ExistentialAudio/BlackHole
-    // I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/ 
-    inputDevice=AudioDeviceWithNameWithPrefixInDeviceList(@"BlackHole 2ch", mInputDeviceList);
-    NSArray<NSNumber*>*a=AudioDevicesWithNameWithPrefixInDeviceList(@"BenQ", mOutputDeviceList);
+    inputDevice = AudioDeviceWithNameWithPrefixInDeviceList(kInputDevicePrefix, mInputDeviceList);
+    NSArray<NSNumber*>* a = AudioDevicesWithNameWithPrefixInDeviceList(kOutputDevicePrefix, mOutputDeviceList);
     if([a count]>=1){
         outputDevice = [a[0] unsignedIntValue];
         playThroughHost = new CAPlayThroughHost(inputDevice,outputDevice);
@@ -172,12 +182,19 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceListButNotThis(NSString*prefi
 	}
 }
 AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDeviceList*devList){
+    NSLog(@"Checking for device starting with: %@", prefix);
     int index=0;
     AudioDeviceList::DeviceList &thelist = devList->GetList();
     for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
         NSString*name=[NSString stringWithUTF8String:(*i).mName];
+        NSLog(@"Found input device %@", name);
+
         if([name hasPrefix:prefix]){
+            NSLog(@"Matched, choosing this input device.");
             return (*i).mID;
+        }
+        else {
+            NSLog(@"Not a match, skipping.");
         }
     }
     abort();
