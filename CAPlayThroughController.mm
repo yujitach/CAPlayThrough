@@ -187,10 +187,10 @@ AudioDeviceID AudioDeviceWithNameWithPrefixInDeviceList(NSString*prefix,AudioDev
     AudioDeviceList::DeviceList &thelist = devList->GetList();
     for (AudioDeviceList::DeviceList::iterator i = thelist.begin(); i != thelist.end(); ++i, ++index) {
         NSString*name=[NSString stringWithUTF8String:(*i).mName];
-        NSLog(@"Found device %@", name);
+        NSLog(@"Found input device %@", name);
 
         if([name hasPrefix:prefix]){
-            NSLog(@"Matched, choosing this device.");
+            NSLog(@"Matched, choosing this input device.");
             return (*i).mID;
         }
         else {
