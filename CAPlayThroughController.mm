@@ -53,11 +53,11 @@
 // I got this info from https://forums.macrumors.com/threads/mac-cant-control-display-monitor-volume.2270285/
 /// Replace with prefix of desired input device on your system
 /// Run once and look at log for list of input device names if unsure
-static NSString *const kInputDevicePrefix = @"USB";
+static NSString *const kInputDevicePrefix = @"BlackHole 2ch";
 
 /// Replace with prefix of designed output device on your system
 /// The names of your devices can be found in the Preferences -> Sound
-static NSString *const kOutputDevicePrefix = @"External";
+static NSString *const kOutputDevicePrefix = @"BenQ";
 
 @implementation CAPlayThroughController
 static void	BuildDeviceMenu(AudioDeviceList *devlist, NSPopUpButton *menu, AudioDeviceID initSel);
